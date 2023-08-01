@@ -1,6 +1,8 @@
 #include <Pinecone.h>
 #include <Pinecone/Core/EntryPoint.h>
 
+#include "Game.h"
+
 using namespace Pinecone;
 
 namespace PineconeGame
@@ -11,7 +13,7 @@ namespace PineconeGame
 		PineconeApp()
 			: Application()
 		{
-
+			PushLayer(new Game());
 		}
 	};
 }
