@@ -14,12 +14,13 @@ namespace Pathfinding
 	public:
 		virtual void Search(Ref<NodeMap> nodeMap, NodeMap::Node* startNode, NodeMap::Node* endNode);
 
+		void ResetPath();
+
 		std::vector<NodeMap::Node*> GetPath() const { return m_Path; }
-		NodeMap::Node* GetNextPathNode(float x, float y) const;
+		NodeMap::Node* GetCurrentPathNode() const;
+		NodeMap::Node* GetNextPathNode();
 
 		bool HasPath() const { return m_Path.size() > 1; }
-	protected:
-		void ResetPath();
 	protected:
 		std::vector<NodeMap::Node*> m_Path;
 		int m_CurrentPathIndex = 0;

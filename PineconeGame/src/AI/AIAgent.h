@@ -17,10 +17,14 @@ public:
 
 	void SetSpeed(float speed) { m_Speed = speed; }
 	float& GetSpeed() { return m_Speed; }
+
+	void SetDestination(NodeMap::Node* node);
+
+	Ref<Pathfinding::PathAlgorithm> GetPathAlgo() const { return m_PathAlgo; }
 protected:
 	glm::vec2 m_Direction = glm::vec2(0.0f);
 	float m_Speed = 1.0f;
 
 	Behaviour* m_BehaviourTree;
-	Pathfinding::PathAlgorithm m_PathAlgo;
+	Ref<Pathfinding::PathAlgorithm> m_PathAlgo;
 };

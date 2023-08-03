@@ -34,7 +34,7 @@ protected:
 namespace Tiles
 {
 	static Tile* AirTile = new Tile(TILE_AIR);
-	static Tile* GroundTile = new Tile(TILE_GROUND, glm::vec4(0.2f, 0.8f, 0.2f, 1.0f));
+	static Tile* GroundTile = new Tile(TILE_GROUND, glm::vec4(0.2f, 0.6f, 0.2f, 1.0f));
 	static Tile* WaterTile = new Tile(TILE_WATER, glm::vec4(0.2f, 0.2f, 0.8f, 1.0f));
 	static Tile* WallTile = new Tile(TILE_WALL, glm::vec4(0.6f, 0.6f, 0.6f, 1.0f));
 }

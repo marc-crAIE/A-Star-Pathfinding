@@ -72,6 +72,7 @@ public:
 	void OnRender();
 
 	Node* GetNode(int x, int y) const { return m_Nodes[x][y]; };
+	Node* GetNode(float x, float y) const;
 private:
 	Node* m_Nodes[WORLD_WIDTH][WORLD_HEIGHT];
 };

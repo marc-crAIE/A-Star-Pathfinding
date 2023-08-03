@@ -12,7 +12,7 @@ namespace Utils
 	static glm::vec2 MouseToOpenGLCoords()
 	{
 		glm::vec2 mousePos = Input::GetMousePosition();
-		auto& camera = Game::GetScene().GetPrimaryCameraGameObject().GetComponent<CameraComponent>().Camera;
+		auto& camera = Game::GetScene()->GetPrimaryCameraGameObject().GetComponent<CameraComponent>().Camera;
 
 		uint32_t windowWidth = Application::Get().GetWindow().GetWidth();
 		uint32_t windowHeight = Application::Get().GetWindow().GetHeight();

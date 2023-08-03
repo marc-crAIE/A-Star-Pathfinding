@@ -22,7 +22,8 @@ public:
 	void OnUpdate(Timestep ts) override;
 
 	static Game& Get() { return *s_Instance; }
-	static Scene& GetScene() { return *s_Instance->m_ActiveScene; }
+	static Ref<Scene> GetScene() { return s_Instance->m_ActiveScene; }
+	static Ref<NodeMap> GetNodeMap() { return s_Instance->m_NodeMap; }
 private:
 	bool OnWindowResized(WindowResizeEvent& e);
 private:

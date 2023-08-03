@@ -54,16 +54,16 @@ void Game::OnUpdate(Timestep ts)
 		{
 			m_MousePressed = true;
 
-			glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0) + glm::vec2(0.5f, -0.5f);
+			/*glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0) + glm::vec2(0.5f, -0.5f);
 			glm::vec2 mousePos = Utils::MouseToOpenGLCoords() + offset;
 			if (mousePos.x >= 0 && mousePos.x < WORLD_WIDTH && mousePos.y >= 0 && mousePos.y < WORLD_HEIGHT)
 			{
 				PC_INFO("Tile: {0}, {1}", glm::floor(mousePos.x), glm::floor(mousePos.y));
 
 				if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
-					m_StartNode = m_NodeMap->GetNode(glm::floor(mousePos.x), (WORLD_HEIGHT - 1) - glm::floor(mousePos.y));
+					m_StartNode = m_NodeMap->GetNode(mousePos.x, WORLD_HEIGHT - mousePos.y);
 				else
-					m_EndNode = m_NodeMap->GetNode(glm::floor(mousePos.x), (WORLD_HEIGHT - 1) - glm::floor(mousePos.y));
+					m_EndNode = m_NodeMap->GetNode(mousePos.x, WORLD_HEIGHT - mousePos.y);
 			}
 
 			if (m_StartNode && m_EndNode)
@@ -71,7 +71,7 @@ void Game::OnUpdate(Timestep ts)
 				PC_INFO("Find Path!");
 				m_PathAlgo.Search(m_NodeMap, m_StartNode, m_EndNode);
 				PC_INFO("Number of nodes in path: {0}", m_PathAlgo.GetPath().size());
-			}
+			}*/
 		}
 	}
 	else if (m_MousePressed)
@@ -95,7 +95,7 @@ void Game::OnUpdate(Timestep ts)
 		Renderer2D::DrawQuad(glm::vec3(pos, 1.0f), glm::vec2(0.75f), glm::vec4(1.0f, 0.6f, 0.1f, 1.0f));
 	}
 
-	if (m_PathAlgo.GetPath().size() > 1)
+	if (m_PathAlgo.GetPath().size() > 1 && m_StartNode && m_EndNode)
 	{
 		glm::vec2 prevPos = glm::vec2(0.0f);
 		for (int i = 0; i < m_PathAlgo.GetPath().size(); i++)

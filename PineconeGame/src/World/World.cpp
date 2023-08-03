@@ -12,7 +12,13 @@ World::World()
 			}
 			else
 			{
-				m_Tiles[x][y] = (rand() % 10 == 0) ? Tiles::WallTile : Tiles::GroundTile;
+				if (x >= (WORLD_WIDTH / 2 - 2) && x <= (WORLD_WIDTH / 2 + 2) &&
+					y >= (WORLD_HEIGHT / 2 - 2) && y <= (WORLD_HEIGHT / 2 + 2))
+				{
+					m_Tiles[x][y] = Tiles::GroundTile;
+				}
+				else
+					m_Tiles[x][y] = (rand() % 4 == 0) ? Tiles::WallTile : Tiles::GroundTile;
 			}
 		}
 	}
@@ -29,7 +35,7 @@ void World::OnRender()
 		{
 			glm::vec2 tilePos = glm::vec2{ x * tileSize, y * tileSize } - offset;
 			glm::vec4 color = m_Tiles[x][y]->GetColor();
-			Renderer2D::DrawQuad(glm::vec3(tilePos, -0.5f), { tileSize, tileSize }, color);
+			Renderer2D::DrawQuad(glm::vec3(tilePos, -0.9f), { tileSize, tileSize }, color);
 		}
 	}
 }

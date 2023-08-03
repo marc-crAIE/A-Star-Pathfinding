@@ -104,14 +104,19 @@ void NodeMap::OnRender()
 			if (node)
 			{
 				glm::vec2 tilePos = glm::vec2{ x * tileSize, y * tileSize } - offset;
-				Renderer2D::DrawQuad(glm::vec3(tilePos, 1.0f), glm::vec2(tileSize, tileSize) * 0.25f, nodeColor);
+				Renderer2D::DrawQuad(glm::vec3(tilePos, -0.5f), glm::vec2(tileSize, tileSize) * 0.25f, nodeColor);
 
 				for (int i = 0; i < node->GetConnections().size(); i++)
 				{
 					Node* other = node->GetConnections()[i].GetNode();
-					Renderer2D::DrawLine(glm::vec3(node->GetPosition() - offset, 0.75f), glm::vec3(other->GetPosition() - offset, 0.75f), lineColor);
+					Renderer2D::DrawLine(glm::vec3(node->GetPosition() - offset, -0.75f), glm::vec3(other->GetPosition() - offset, -0.75f), lineColor);
 				}
 			}
 		}
 	}
+}
+
+NodeMap::Node* NodeMap::GetNode(float x, float y) const
+{
+	return m_Nodes[(int)glm::floor(x)][(int)glm::floor(y)];
 }
