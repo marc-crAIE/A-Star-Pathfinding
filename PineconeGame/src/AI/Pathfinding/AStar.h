@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Pathfinding.h"
+#include "PathAlgorithm.h"
 
 namespace Pathfinding
 {

@@ -2,6 +2,7 @@
 
 #include "Entity/Knight.h"
 #include "Utils/Utils.h"
+#include "Utils/ResourceManager.h"
 
 Game* Game::s_Instance = nullptr;
 
@@ -34,7 +35,8 @@ void Game::OnAttach()
 	// TEMPORARY CODE
 	m_Knight = m_ActiveScene->CreateGameObject("Knight");
 	m_Knight.AddComponent<NativeScriptComponent>().Bind<Knight>();
-	m_Knight.AddComponent<SpriteComponent>();
+	auto& knightSprite = m_Knight.AddComponent<SpriteComponent>();
+	knightSprite.Texture = ResourceManager::GetTexture("assets/textures/knight/Knight_Idle.png");
 }
 
 void Game::OnEvent(Event& e)
@@ -81,7 +83,7 @@ void Game::OnUpdate(Timestep ts)
 
 	Renderer2D::BeginScene(m_Camera.GetComponent<CameraComponent>().Camera);
 	m_World->OnRender();
-	m_NodeMap->OnRender();
+	//m_NodeMap->OnRender();
 
 	glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0);
 	if (m_StartNode)

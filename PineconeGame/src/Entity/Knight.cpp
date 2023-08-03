@@ -34,6 +34,26 @@ static BehaviourStatus SelectAction(GameObject gameObject, Timestep ts)
 	return BH_FAILURE;
 }
 
+static BehaviourStatus IsWanderingCondition(GameObject gameObject, Timestep ts)
+{
+	Knight* knight = dynamic_cast<Knight*>(gameObject.GetComponent<NativeScriptComponent>().Instance);
+
+	if (knight)
+		return knight->IsWandering() ? BH_SUCCESS : BH_FAILURE;
+
+	return BH_FAILURE;
+}
+
+static BehaviourStatus IsNotWanderingCondition(GameObject gameObject, Timestep ts)
+{
+	Knight* knight = dynamic_cast<Knight*>(gameObject.GetComponent<NativeScriptComponent>().Instance);
+
+	if (knight)
+		return knight->IsWandering() ? BH_FAILURE : BH_SUCCESS;
+
+	return BH_FAILURE;
+}
+
 static BehaviourStatus HasPathCondition(GameObject gameObject, Timestep ts)
 {
 	Knight* knight = dynamic_cast<Knight*>(gameObject.GetComponent<NativeScriptComponent>().Instance);
@@ -75,37 +95,8 @@ static BehaviourStatus SetDestinationAction(GameObject gameObject, Timestep ts)
 static BehaviourStatus GotoDestinationAction(GameObject gameObject, Timestep ts)
 {
 	Knight* knight = dynamic_cast<Knight*>(gameObject.GetComponent<NativeScriptComponent>().Instance);
-
-	if (knight->GetPathAlgo()->HasPath())
-	{
-		glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0);
-
-		auto& transform = knight->GetComponent<TransformComponent>();
-		auto knightPos = glm::vec2(knight->GetComponent<TransformComponent>().Translation) + offset;
-		auto path = knight->GetPathAlgo();
-
-		NodeMap::Node* currNode = path->GetCurrentPathNode();
-		float dist = glm::distance(knightPos, currNode->GetPosition());
-		glm::vec2 dir = glm::normalize(currNode->GetPosition() - knightPos);
-
-		if ((dist - (Knight::GetSpeed() * ts)) > 0)
-		{
-			transform.Translation += glm::vec3(Knight::GetSpeed() * dir * (float)ts, 0.0f);
-		}
-		else
-		{
-			if (currNode == path->GetPath()[path->GetPath().size() - 1])
-			{
-				path->ResetPath();
-				return BH_SUCCESS;
-			}
-
-			currNode = path->GetNextPathNode();
-		}
-
-		return BH_SUCCESS;
-	}
-	return BH_FAILURE;
+	bool success = knight->FollowPath(Knight::GetSpeed(), ts);
+	return success ? BH_SUCCESS : BH_FAILURE;
 }
 
 #pragma endregion
@@ -116,6 +107,7 @@ void Knight::OnCreate()
 		(new FallbackNode())->Add(
 			(new SequenceNode())->Add(
 				new FuncAction(HasPathCondition))->Add(
+				new FuncAction(IsNotWanderingCondition))->Add(
 				new FuncAction(GotoDestinationAction))
 		)->Add(
 			(new FallbackNode())->Add(
@@ -142,11 +134,13 @@ void Knight::OnCreate()
 									new SetSpriteColorAction(glm::vec4(0.2f, 1.0f, 0.3f, 1.0f)))
 							)->Add(
 								(new SequenceNode())->Add(
-									new SetSpriteColorAction(glm::vec4(1.0f)))
+									new SetSpriteColorAction(glm::vec4(0.75f, 0.75f, 0.75f, 1.0f)))->Add(
+									new FuncAction(GotoDestinationAction))
 							))
 					)->Add(
 						(new SequenceNode())->Add(
-							new SetSpriteColorAction(glm::vec4(0.75f, 0.75f, 0.75f, 1.0f)))
+							new SetSpriteColorAction(glm::vec4(1.0f)))->Add(
+							new WanderAction())
 					)
 			)
 		);
@@ -157,10 +151,4 @@ void Knight::OnCreate()
 void Knight::OnUpdate(Timestep ts)
 {
 	m_BehaviourTree->Tick(GetGameObject(), ts);
-
-	auto& transform = GetComponent<TransformComponent>();
-	if (Input::IsKeyPressed(Key::W))
-	{
-		transform.Translation.x += 1.0f * ts;
-	}
 }

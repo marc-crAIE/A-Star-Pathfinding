@@ -1,4 +1,4 @@
-#include "Pathfinding.h"
+#include "PathAlgorithm.h"
 
 void Pathfinding::PathAlgorithm::Search(Ref<NodeMap> nodeMap, NodeMap::Node* startNode, NodeMap::Node* endNode)
 {

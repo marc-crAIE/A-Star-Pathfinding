@@ -3,7 +3,7 @@
 #include <Pinecone.h>
 
 #include "Behaviour/Behaviours.h"
-#include "Pathfinding/Pathfinding.h"
+#include "Pathfinding/PathAlgorithm.h"
 
 using namespace Pinecone;
 
@@ -19,6 +19,7 @@ public:
 	float& GetSpeed() { return m_Speed; }
 
 	void SetDestination(NodeMap::Node* node);
+	bool FollowPath(float speed, Timestep ts);
 
 	Ref<Pathfinding::PathAlgorithm> GetPathAlgo() const { return m_PathAlgo; }
 protected:

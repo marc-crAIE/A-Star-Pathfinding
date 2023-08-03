@@ -18,7 +18,7 @@ World::World()
 					m_Tiles[x][y] = Tiles::GroundTile;
 				}
 				else
-					m_Tiles[x][y] = (rand() % 4 == 0) ? Tiles::WallTile : Tiles::GroundTile;
+					m_Tiles[x][y] = (rand() % 3 == 0) ? Tiles::WallTile : Tiles::GroundTile;
 			}
 		}
 	}

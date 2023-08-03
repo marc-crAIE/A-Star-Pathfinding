@@ -88,15 +88,22 @@ BehaviourStatus WanderAction::OnUpdate(GameObject gameObject, Timestep ts)
 
 	if (agent)
 	{
-		float angle = (rand() % 360) * (glm::pi<float>() / 180.0f);
-		glm::vec2 dir = { glm::cos(angle), glm::sin(angle) };
-		glm::normalize(dir);
+		// There is no current path, find a new path to wander to
+		if (!agent->GetPathAlgo()->HasPath())
+		{
+			int posX = rand() % WORLD_WIDTH;
+			int posY = rand() % WORLD_HEIGHT;
 
-		glm::vec2& currDir = agent->GetDirection();
-		currDir = dir;
+			NodeMap::Node* node = Game::GetNodeMap()->GetNode(posX, posY);
+			if (!node)
+				return BH_FAILURE;
 
-		transform.Translation += glm::vec3{ currDir.x, currDir.y, 0.0f } * agent->GetSpeed() * (float)ts;
-		
+			agent->SetDestination(node);
+			if (!agent->GetPathAlgo()->HasPath())
+				return BH_FAILURE;
+		}
+
+		agent->FollowPath(3.0f, ts);
 		return BH_SUCCESS;
 	}
 	return BH_FAILURE;
