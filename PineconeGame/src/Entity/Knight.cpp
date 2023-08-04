@@ -7,7 +7,7 @@
 
 using namespace Pinecone;
 
-float Knight::m_MoveSpeed = 3.0f;
+float Knight::m_MoveSpeed = 5.0f;
 
 #pragma region Behaviours
 
@@ -124,24 +124,24 @@ void Knight::OnCreate()
 							new FuncAction(UnselectAction))
 					))
 			)->Add(
-					(new FallbackNode())->Add(
-						(new SequenceNode())->Add(
-							new MouseNearCondition(2))->Add(
-							(new FallbackNode())->Add(
-								(new SequenceNode())->Add(
-									new MouseButtonReleaseCondition(Mouse::ButtonLeft))->Add(
-									new FuncAction(SelectAction))->Add(
-									new SetSpriteColorAction(glm::vec4(0.2f, 1.0f, 0.3f, 1.0f)))
-							)->Add(
-								(new SequenceNode())->Add(
-									new SetSpriteColorAction(glm::vec4(0.75f, 0.75f, 0.75f, 1.0f)))->Add(
-									new FuncAction(GotoDestinationAction))
-							))
-					)->Add(
-						(new SequenceNode())->Add(
-							new SetSpriteColorAction(glm::vec4(1.0f)))->Add(
-							new WanderAction())
-					)
+				(new FallbackNode())->Add(
+					(new SequenceNode())->Add(
+						new MouseNearCondition(2))->Add(
+						(new FallbackNode())->Add(
+							(new SequenceNode())->Add(
+								new MouseButtonReleaseCondition(Mouse::ButtonLeft))->Add(
+								new FuncAction(SelectAction))->Add(
+								new SetSpriteColorAction(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)))
+						)->Add(
+							(new SequenceNode())->Add(
+								new SetSpriteColorAction(glm::vec4(0.75f, 0.75f, 0.75f, 1.0f)))->Add(
+								new WanderAction(2.0f))
+						))
+				)->Add(
+					(new SequenceNode())->Add(
+						new SetSpriteColorAction(glm::vec4(1.0f)))->Add(
+						new WanderAction(2.0f))
+				)
 			)
 		);
 

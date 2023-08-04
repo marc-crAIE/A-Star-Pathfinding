@@ -92,8 +92,8 @@ void NodeMap::OnRender()
 	float tileSize = 1.0f;
 	glm::vec2 offset = { WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f };
 
-	glm::vec4 nodeColor = glm::vec4(1.0f, 0.0f, 0.0f, 0.25f);
-	glm::vec4 lineColor = glm::vec4(0.75f, 0.2f, 0.2f, 0.25f);
+	glm::vec4 nodeColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.25f);
+	glm::vec4 lineColor = glm::vec4(0.75f, 0.2f, 0.2f, 1.25f);
 
 	for (int y = 0; y < WORLD_HEIGHT; y++)
 	{

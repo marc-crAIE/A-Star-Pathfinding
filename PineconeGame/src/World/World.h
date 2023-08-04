@@ -6,8 +6,8 @@
 
 using namespace Pinecone;
 
-#define WORLD_WIDTH		40
-#define WORLD_HEIGHT	25
+#define WORLD_WIDTH		50
+#define WORLD_HEIGHT	30
 
 class World
 {

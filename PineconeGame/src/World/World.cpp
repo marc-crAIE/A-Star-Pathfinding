@@ -1,5 +1,7 @@
 #include "World.h"
 
+#include "../Utils/ResourceManager.h"
+
 World::World()
 {
 	for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -18,7 +20,7 @@ World::World()
 					m_Tiles[x][y] = Tiles::GroundTile;
 				}
 				else
-					m_Tiles[x][y] = (rand() % 3 == 0) ? Tiles::WallTile : Tiles::GroundTile;
+					m_Tiles[x][y] = (rand() % 8 == 0) ? Tiles::WallTile : Tiles::GroundTile;
 			}
 		}
 	}
@@ -34,8 +36,15 @@ void World::OnRender()
 		for (int x = 0; x < WORLD_WIDTH; x++)
 		{
 			glm::vec2 tilePos = glm::vec2{ x * tileSize, y * tileSize } - offset;
-			glm::vec4 color = m_Tiles[x][y]->GetColor();
-			Renderer2D::DrawQuad(glm::vec3(tilePos, -0.9f), { tileSize, tileSize }, color);
+			glm::vec4 color = m_Tiles[x][y]->Color;
+			Ref<Texture2D> texture;
+			if (!m_Tiles[x][y]->Texture.empty())
+				texture = ResourceManager::GetTexture(m_Tiles[x][y]->Texture);
+
+			if (texture && texture->IsLoaded())
+				Renderer2D::DrawQuad(glm::vec3(tilePos, -0.9f), { tileSize, tileSize }, texture);
+			else
+				Renderer2D::DrawQuad(glm::vec3(tilePos, -0.9f), { tileSize, tileSize }, color);
 		}
 	}
 }

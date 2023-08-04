@@ -31,12 +31,8 @@ void Game::OnAttach()
 
 	cc.Camera.SetOrthographic(30.0f, -1.0f, 1.0f);
 
-
-	// TEMPORARY CODE
-	m_Knight = m_ActiveScene->CreateGameObject("Knight");
-	m_Knight.AddComponent<NativeScriptComponent>().Bind<Knight>();
-	auto& knightSprite = m_Knight.AddComponent<SpriteComponent>();
-	knightSprite.Texture = ResourceManager::GetTexture("assets/textures/knight/Knight_Idle.png");
+	for (int i = 0; i < 50; i++)
+		SpawnKnight(0, 0);
 }
 
 void Game::OnEvent(Event& e)
@@ -49,6 +45,8 @@ void Game::OnUpdate(Timestep ts)
 {
 	Renderer2D::ResetStats();
 	RenderCommand::Clear();
+
+	//PC_INFO("FPS: {0}", 1 / ts);
 
 	if (Input::IsMouseButtonPressed(Mouse::ButtonLeft) || Input::IsMouseButtonPressed(Mouse::ButtonRight))
 	{
@@ -83,7 +81,7 @@ void Game::OnUpdate(Timestep ts)
 
 	Renderer2D::BeginScene(m_Camera.GetComponent<CameraComponent>().Camera);
 	m_World->OnRender();
-	//m_NodeMap->OnRender();
+	m_NodeMap->OnRender();
 
 	glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0);
 	if (m_StartNode)
@@ -114,6 +112,14 @@ void Game::OnUpdate(Timestep ts)
 	}
 
 	Renderer2D::EndScene();
+}
+
+void Game::SpawnKnight(float x, float y)
+{
+	m_Knight = m_ActiveScene->CreateGameObject("Knight");
+	m_Knight.AddComponent<NativeScriptComponent>().Bind<Knight>();
+	auto& knightSprite = m_Knight.AddComponent<SpriteComponent>();
+	knightSprite.Texture = ResourceManager::GetTexture("assets/textures/knight/Knight_Idle.png");
 }
 
 bool Game::OnWindowResized(WindowResizeEvent& e)

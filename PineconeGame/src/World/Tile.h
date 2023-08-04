@@ -1,6 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <Pinecone.h>
+
+using namespace Pinecone;
 
 enum TileType
 {
@@ -10,31 +13,34 @@ enum TileType
 	TILE_WALL
 };
 
-class Tile
+struct Tile
 {
 public:
 	Tile(TileType type)
-		: m_Type(type)
+		: Type(type)
 	{
-		m_Color = glm::vec4(0.0f);
+		Color = glm::vec4(0.0f);
 	}
 
 	Tile(TileType type, glm::vec4& color)
-		: m_Type(type), m_Color(color)
+		: Type(type), Color(color)
 	{}
 
-	TileType GetType() const { return m_Type; }
-	glm::vec4 GetColor() const { return m_Color; }
-	bool IsPathable() const { return m_Type == TILE_GROUND; }
-protected:
-	TileType m_Type;
-	glm::vec4 m_Color;
+	Tile(TileType type, const std::string& texture)
+		: Type(type), Texture(texture)
+	{}
+
+	bool IsPathable() const { return Type == TILE_GROUND; }
+public:
+	TileType Type;
+	glm::vec4 Color;
+	std::string Texture;
 };
 
 namespace Tiles
 {
 	static Tile* AirTile = new Tile(TILE_AIR);
-	static Tile* GroundTile = new Tile(TILE_GROUND, glm::vec4(0.2f, 0.6f, 0.2f, 1.0f));
+	static Tile* GroundTile = new Tile(TILE_GROUND, "assets/textures/tiles/ground.png");// glm::vec4(0.2f, 0.6f, 0.2f, 1.0f));
 	static Tile* WaterTile = new Tile(TILE_WATER, glm::vec4(0.2f, 0.2f, 0.8f, 1.0f));
 	static Tile* WallTile = new Tile(TILE_WALL, glm::vec4(0.6f, 0.6f, 0.6f, 1.0f));
 }

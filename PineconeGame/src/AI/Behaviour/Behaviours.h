@@ -102,7 +102,11 @@ private:
 class WanderAction : public Behaviour
 {
 public:
+	WanderAction(float speed = 1.0f) : m_Speed(speed) {}
+
 	BehaviourStatus OnUpdate(GameObject gameObject, Timestep ts) override;
+private:
+	float m_Speed;
 };
 
 #pragma endregion

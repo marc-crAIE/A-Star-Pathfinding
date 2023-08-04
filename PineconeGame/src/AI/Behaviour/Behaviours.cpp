@@ -103,7 +103,7 @@ BehaviourStatus WanderAction::OnUpdate(GameObject gameObject, Timestep ts)
 				return BH_FAILURE;
 		}
 
-		agent->FollowPath(3.0f, ts);
+		agent->FollowPath(m_Speed, ts);
 		return BH_SUCCESS;
 	}
 	return BH_FAILURE;

@@ -21,6 +21,8 @@ public:
 
 	void OnUpdate(Timestep ts) override;
 
+	void SpawnKnight(float x, float y);
+
 	static Game& Get() { return *s_Instance; }
 	static Ref<Scene> GetScene() { return s_Instance->m_ActiveScene; }
 	static Ref<NodeMap> GetNodeMap() { return s_Instance->m_NodeMap; }
