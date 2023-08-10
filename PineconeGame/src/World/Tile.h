@@ -10,7 +10,9 @@ enum TileType
 	TILE_AIR,
 	TILE_GROUND,
 	TILE_WATER,
-	TILE_WALL
+	TILE_TREE,
+	TILE_ROCK,
+	TILE_BUILDING
 };
 
 struct Tile
@@ -28,7 +30,9 @@ public:
 
 	Tile(TileType type, const std::string& texture)
 		: Type(type), Texture(texture)
-	{}
+	{
+		Color = glm::vec4(0.0f);
+	}
 
 	bool IsPathable() const { return Type == TILE_GROUND; }
 public:
@@ -40,7 +44,13 @@ public:
 namespace Tiles
 {
 	static Tile* AirTile = new Tile(TILE_AIR);
-	static Tile* GroundTile = new Tile(TILE_GROUND, "assets/textures/tiles/ground.png");// glm::vec4(0.2f, 0.6f, 0.2f, 1.0f));
-	static Tile* WaterTile = new Tile(TILE_WATER, glm::vec4(0.2f, 0.2f, 0.8f, 1.0f));
-	static Tile* WallTile = new Tile(TILE_WALL, glm::vec4(0.6f, 0.6f, 0.6f, 1.0f));
+	static Tile* GroundTile = new Tile(TILE_GROUND, "assets/textures/tiles/ground.png");
+	static Tile* GrassTile = new Tile(TILE_GROUND, "assets/textures/tiles/grass.png");
+	static Tile* SandTile = new Tile(TILE_GROUND, "assets/textures/tiles/sand.png");
+	static Tile* FlowerTile = new Tile(TILE_GROUND, "assets/textures/tiles/flower.png");
+	static Tile* WaterTile = new Tile(TILE_WATER, glm::vec4(0.165f, 0.49f, 0.459f, 1.0f));
+	static Tile* TreeTile = new Tile(TILE_TREE, "assets/textures/tiles/ground.png");
+	static Tile* RockTile = new Tile(TILE_ROCK, "assets/textures/tiles/rock.png");
+	static Tile* RockSmallTile = new Tile(TILE_ROCK, "assets/textures/tiles/rock_small.png");
+	static Tile* BuildingTile = new Tile(TILE_BUILDING, "assets/textures/tiles/ground.png");
 }

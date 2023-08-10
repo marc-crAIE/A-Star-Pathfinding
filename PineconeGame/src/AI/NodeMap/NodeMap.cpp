@@ -118,5 +118,7 @@ void NodeMap::OnRender()
 
 NodeMap::Node* NodeMap::GetNode(float x, float y) const
 {
+	if (x < 0 || x >= WORLD_WIDTH || y < 0 || y >= WORLD_HEIGHT)
+		return nullptr;
 	return m_Nodes[(int)glm::floor(x)][(int)glm::floor(y)];
 }

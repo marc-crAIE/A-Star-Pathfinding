@@ -109,6 +109,17 @@ private:
 	float m_Speed;
 };
 
+class WanderAroundObjectAction : public Behaviour
+{
+public:
+	WanderAroundObjectAction(GameObject target, float speed = 1.0f) : m_Target(target), m_Speed(speed) {}
+
+	BehaviourStatus OnUpdate(GameObject gameObject, Timestep ts) override;
+private:
+	GameObject m_Target;
+	float m_Speed;
+};
+
 #pragma endregion
 
 #pragma region Misc

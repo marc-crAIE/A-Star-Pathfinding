@@ -19,5 +19,13 @@ public:
 
 	Tile& GetTile(int x, int y) const { return *m_Tiles[x][y]; }
 private:
+	void Generate();
+	void GenerateBuildings();
+	void GenerateDecorations();
+
+	void CreateBuildingTiles(int x, int y, int width, int height);
+	void SpawnCastle();
+	void SpawnTree(int x, int y);
+private:
 	Tile* m_Tiles[WORLD_WIDTH][WORLD_HEIGHT];
 };

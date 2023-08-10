@@ -1,29 +1,12 @@
 #include "World.h"
 
+#include "../Utils/PerlinNoise.h"
 #include "../Utils/ResourceManager.h"
+#include "../Game.h"
 
 World::World()
 {
-	for (int y = 0; y < WORLD_HEIGHT; y++)
-	{
-		for (int x = 0; x < WORLD_WIDTH; x++)
-		{
-			if ((x == 0 || x == WORLD_WIDTH - 1) || (y == 0 || y == WORLD_HEIGHT - 1))
-			{
-				m_Tiles[x][y] = Tiles::WaterTile;
-			}
-			else
-			{
-				if (x >= (WORLD_WIDTH / 2 - 2) && x <= (WORLD_WIDTH / 2 + 2) &&
-					y >= (WORLD_HEIGHT / 2 - 2) && y <= (WORLD_HEIGHT / 2 + 2))
-				{
-					m_Tiles[x][y] = Tiles::GroundTile;
-				}
-				else
-					m_Tiles[x][y] = (rand() % 8 == 0) ? Tiles::WallTile : Tiles::GroundTile;
-			}
-		}
-	}
+	Generate();
 }
 
 void World::OnRender()
@@ -47,4 +30,137 @@ void World::OnRender()
 				Renderer2D::DrawQuad(glm::vec3(tilePos, -0.9f), { tileSize, tileSize }, color);
 		}
 	}
+}
+
+void World::Generate()
+{
+	PerlinNoise pn(7, 0.5f);
+
+	for (int y = 0; y < WORLD_HEIGHT; y++)
+	{
+		for (int x = 0; x < WORLD_WIDTH; x++)
+		{
+			float widthPercent = (float)x / WORLD_WIDTH;
+			float heightPercent = (float)y / WORLD_HEIGHT;
+
+			float noise = glm::sin(widthPercent * glm::pi<float>());
+			noise *= glm::sin(heightPercent * glm::pi<float>());
+			noise *= pn.GetNoise(x, y) + 0.15f;
+
+			if (noise < 0.08f)
+				m_Tiles[x][y] = Tiles::WaterTile;
+			else if (noise < 0.12f)
+				m_Tiles[x][y] = Tiles::SandTile;
+			else
+				m_Tiles[x][y] = Tiles::GroundTile;
+
+			if ((x == 0 || x == WORLD_WIDTH - 1) || (y == 0 || y == WORLD_HEIGHT - 1))
+			{
+				m_Tiles[x][y] = Tiles::WaterTile;
+			}
+			else
+			{
+				if (x >= (WORLD_WIDTH / 2 - 2) && x <= (WORLD_WIDTH / 2 + 2) &&
+					y >= (WORLD_HEIGHT / 2 - 2) && y <= (WORLD_HEIGHT / 2 + 2))
+				{
+					m_Tiles[x][y] = Tiles::GroundTile;
+				}
+			}
+		}
+	}
+
+	GenerateBuildings();
+	GenerateDecorations();
+}
+
+void World::GenerateBuildings()
+{
+	SpawnCastle();
+}
+
+void World::GenerateDecorations()
+{
+	for (int y = 0; y < WORLD_HEIGHT; y++)
+	{
+		for (int x = 0; x < WORLD_WIDTH; x++)
+		{
+			if (m_Tiles[x][y] == Tiles::GroundTile)
+			{
+				if (rand() % 40 == 0 && m_Tiles[x + 1][y] == Tiles::GroundTile)
+				{
+					SpawnTree(x, y);
+				}
+				else if (rand() % 5 == 0)
+				{
+					m_Tiles[x][y] = Tiles::GrassTile;
+				}
+				else if (rand() % 20 == 0)
+				{
+					m_Tiles[x][y] = Tiles::FlowerTile;
+				}
+				else if (rand() % 50 == 0)
+				{
+					if (rand() % 3 == 0)
+						m_Tiles[x][y] = Tiles::RockTile;
+					else
+						m_Tiles[x][y] = Tiles::RockSmallTile;
+				}
+			}
+		}
+	}
+}
+
+void World::CreateBuildingTiles(int x, int y, int width, int height)
+{
+	int minX = (x - (width / 2));
+	int maxX = (x + (width / 2));
+	int minY = (y - (height / 2));
+	int maxY = (y + (height / 2));
+
+	for (int posY = minY; posY < maxY; posY++)
+	{
+		for (int posX = minX; posX < maxX; posX++)
+		{
+			m_Tiles[posX][posY] = Tiles::BuildingTile;
+		}
+	}
+}
+
+void World::SpawnCastle()
+{
+	int castleSize = 4;
+
+	int posX = WORLD_WIDTH / 2;
+	int posY = WORLD_HEIGHT / 2 + 1;
+	CreateBuildingTiles(posX, posY - 1, castleSize, castleSize / 2);
+
+	glm::vec3 offset = glm::vec3(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0, 0.0f) + glm::vec3(0.5f, 0.5f, 0.0f);
+	float z = ((float)WORLD_HEIGHT / posY) / WORLD_HEIGHT;
+
+	auto castle = Game::GetScene()->CreateGameObject("Castle");
+
+	auto& transform = castle.GetComponent<TransformComponent>();
+	transform.Translation = glm::vec3(posX, posY, 0.25f) - offset;
+	transform.Scale = glm::vec3(castleSize);
+
+	auto& castleSprite = castle.AddComponent<SpriteComponent>();
+	castleSprite.Texture = ResourceManager::GetTexture("assets/textures/buildings/castle.png");
+}
+
+void World::SpawnTree(int x, int y)
+{
+	m_Tiles[x][y] = Tiles::TreeTile;
+	m_Tiles[x + 1][y] = Tiles::TreeTile;
+
+	glm::vec3 offset = glm::vec3(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0, 0.0f) + glm::vec3(-0.5f, -0.5f, 0.0f);
+	float z = ((float)WORLD_HEIGHT / y) / WORLD_HEIGHT;
+
+	auto tree = Game::GetScene()->CreateGameObject("Tree");
+
+	auto& transform = tree.GetComponent<TransformComponent>();
+	transform.Translation = glm::vec3(x, y, z) - offset;
+	transform.Scale = glm::vec3(2);
+
+	auto& treeSprite = tree.AddComponent<SpriteComponent>();
+	treeSprite.Texture = ResourceManager::GetTexture("assets/textures/decorations/tree.png");
 }

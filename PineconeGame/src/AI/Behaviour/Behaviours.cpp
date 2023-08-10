@@ -109,6 +109,42 @@ BehaviourStatus WanderAction::OnUpdate(GameObject gameObject, Timestep ts)
 	return BH_FAILURE;
 }
 
+BehaviourStatus WanderAroundObjectAction::OnUpdate(GameObject gameObject, Timestep ts)
+{
+	auto& transform = gameObject.GetComponent<TransformComponent>();
+	AIAgent* agent = dynamic_cast<AIAgent*>(gameObject.GetComponent<NativeScriptComponent>().Instance);
+
+	if (agent)
+	{
+		// There is no current path, find a new path to wander to
+		if (!agent->GetPathAlgo()->HasPath())
+		{
+			glm::vec3 offset = glm::vec3(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0, 0.0f) + glm::vec3(0.5f, 0.5f, 0.0f);
+
+			float angle = (rand() % 360) * glm::pi<float>() / 180.0f;
+			glm::vec2 dir = glm::vec2(glm::cos(angle), glm::sin(angle));
+			glm::normalize(dir);
+
+			auto& targetTransform = m_Target.GetComponent<TransformComponent>();
+			glm::vec2 targetPos = targetTransform.Translation + offset;
+			targetPos += dir * glm::vec2(targetTransform.Scale);
+
+			NodeMap::Node* node = Game::GetNodeMap()->GetNode(targetPos.x, targetPos.y);
+			if (!node)
+				return BH_FAILURE;
+
+			agent->SetDestination(node);
+			if (!agent->GetPathAlgo()->HasPath())
+				return BH_FAILURE;
+		}
+
+		agent->FollowPath(m_Speed, ts);
+		return BH_SUCCESS;
+	}
+
+	return BH_FAILURE;
+}
+
 BehaviourStatus SetSpriteColorAction::OnUpdate(GameObject gameObject, Timestep ts)
 {
 	if (gameObject.HasComponent<SpriteComponent>())

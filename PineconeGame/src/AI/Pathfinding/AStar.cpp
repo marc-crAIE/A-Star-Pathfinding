@@ -18,7 +18,11 @@ void Pathfinding::AStar::Search(Ref<NodeMap> nodeMap, NodeMap::Node* startNode, 
 	ResetPath();
 
 	if (!startNode || !endNode)
-		PC_ASSERT(false, "Start node or end node is not set!");
+	{
+		PC_ERROR("Start node or end node is not set!");
+		m_Path.push_back(startNode);
+		return;
+	}
 
 	if (startNode == endNode)
 	{

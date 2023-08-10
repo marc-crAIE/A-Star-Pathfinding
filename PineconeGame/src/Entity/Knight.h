@@ -15,6 +15,8 @@ public:
 
 	static float GetSpeed() { return m_MoveSpeed; }
 private:
+	GameObject m_Castle;
+
 	bool m_Wandering = true;
 	bool m_Selected = false;
 	static float m_MoveSpeed;

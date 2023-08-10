@@ -103,6 +103,8 @@ static BehaviourStatus GotoDestinationAction(GameObject gameObject, Timestep ts)
 
 void Knight::OnCreate()
 {
+	m_Castle = Game::GetScene()->GetGameObjectByTag("Castle");
+
 	m_BehaviourTree =
 		(new FallbackNode())->Add(
 			(new SequenceNode())->Add(
@@ -135,12 +137,12 @@ void Knight::OnCreate()
 						)->Add(
 							(new SequenceNode())->Add(
 								new SetSpriteColorAction(glm::vec4(0.75f, 0.75f, 0.75f, 1.0f)))->Add(
-								new WanderAction(2.0f))
+								new WanderAroundObjectAction(m_Castle, 2.0f))
 						))
 				)->Add(
 					(new SequenceNode())->Add(
 						new SetSpriteColorAction(glm::vec4(1.0f)))->Add(
-						new WanderAction(2.0f))
+						new WanderAroundObjectAction(m_Castle, 2.0f))
 				)
 			)
 		);

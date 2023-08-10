@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Pinecone.h>
+#include <Pinecone/Events/KeyEvent.h>
 
 #include "World/World.h"
 #include "AI/NodeMap/NodeMap.h"
@@ -28,6 +29,7 @@ public:
 	static Ref<NodeMap> GetNodeMap() { return s_Instance->m_NodeMap; }
 private:
 	bool OnWindowResized(WindowResizeEvent& e);
+	bool OnKeyReleased(KeyReleasedEvent& e);
 private:
 	Ref<Scene> m_ActiveScene;
 
@@ -36,14 +38,7 @@ private:
 
 	GameObject m_Camera;
 
-	bool m_MousePressed = false;
-
-	// TEMPORARY
-	GameObject m_Knight;
-	Pathfinding::AStar m_PathAlgo;
-
-	NodeMap::Node* m_StartNode = nullptr;
-	NodeMap::Node* m_EndNode = nullptr;
+	bool m_ShowNodeMap = false;
 private:
 	static Game* s_Instance;
 };
