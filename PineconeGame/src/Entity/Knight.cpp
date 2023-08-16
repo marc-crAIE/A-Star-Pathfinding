@@ -1,13 +1,7 @@
 #include "Knight.h"
 
-#include <Pinecone.h>
-
 #include "../AI/Pathfinding/AStar.h"
 #include "../Utils/Utils.h"
-
-using namespace Pinecone;
-
-float Knight::m_MoveSpeed = 5.0f;
 
 #pragma region Behaviours
 
@@ -95,7 +89,7 @@ static BehaviourStatus SetDestinationAction(GameObject gameObject, Timestep ts)
 static BehaviourStatus GotoDestinationAction(GameObject gameObject, Timestep ts)
 {
 	Knight* knight = dynamic_cast<Knight*>(gameObject.GetComponent<NativeScriptComponent>().Instance);
-	bool success = knight->FollowPath(Knight::GetSpeed(), ts);
+	bool success = knight->FollowPath(ts);
 	return success ? BH_SUCCESS : BH_FAILURE;
 }
 
@@ -104,6 +98,7 @@ static BehaviourStatus GotoDestinationAction(GameObject gameObject, Timestep ts)
 void Knight::OnCreate()
 {
 	m_Castle = Game::GetScene()->GetGameObjectByTag("Castle");
+	m_Speed = 3.0f;
 
 	m_BehaviourTree =
 		(new FallbackNode())->Add(

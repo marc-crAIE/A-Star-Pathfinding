@@ -19,7 +19,8 @@ public:
 	float& GetSpeed() { return m_Speed; }
 
 	void SetDestination(NodeMap::Node* node);
-	bool FollowPath(float speed, Timestep ts);
+	void SetDestination(NodeMap::Node* start, NodeMap::Node* end);
+	bool FollowPath(Timestep ts);
 
 	Ref<Pathfinding::PathAlgorithm> GetPathAlgo() const { return m_PathAlgo; }
 protected:

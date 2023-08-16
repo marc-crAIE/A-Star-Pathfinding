@@ -1,6 +1,8 @@
 #include "Game.h"
 
 #include "Entity/Knight.h"
+#include "Entity/Enemies/EnemyKnight.h"
+#include "Entity/Ship.h"
 #include "Utils/Utils.h"
 #include "Utils/ResourceManager.h"
 
@@ -28,11 +30,12 @@ void Game::OnAttach()
 	auto& cc = m_Camera.AddComponent<CameraComponent>();
 
 	cc.Camera.SetViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
-
-	cc.Camera.SetOrthographic(30.0f, -1.0f, 1.0f);
+	cc.Camera.SetOrthographic(40.0f, -1.0f, 1.0f);
 
 	for (int i = 0; i < 10; i++)
 		SpawnKnight(3, 3);
+
+	SpawnShip();
 }
 
 void Game::OnEvent(Event& e)
@@ -51,12 +54,26 @@ void Game::OnUpdate(Timestep ts)
 
 	m_ActiveScene->OnUpdate(ts);
 
+	// If there are any Game Objects to be destroyed after updating our scripts. Destroy all of them
+	for (auto gameObject : m_GameObjectsToDestroy)
+	{
+		// Destroy the Game Object in the active scene
+		m_ActiveScene->DestroyGameObject(gameObject);
+	}
+	// Clear the vector as we cannot destroy Game Objects that no longer exist in the scene
+	m_GameObjectsToDestroy.clear();
+
 	Renderer2D::BeginScene(m_Camera.GetComponent<CameraComponent>().Camera);
 	m_World->OnRender();
 	if (m_ShowNodeMap)
 		m_NodeMap->OnRender();
 
 	Renderer2D::EndScene();
+}
+
+void Game::DestroyGameObject(GameObject gameObject)
+{
+	m_GameObjectsToDestroy.push_back(gameObject);
 }
 
 void Game::SpawnKnight(float x, float y)
@@ -67,8 +84,72 @@ void Game::SpawnKnight(float x, float y)
 	auto& transform = knight.GetComponent<TransformComponent>();
 	transform.Translation = glm::vec3(x, y, 0.0f);
 
-	auto& knightSprite = knight.AddComponent<SpriteComponent>();
-	knightSprite.Texture = ResourceManager::GetTexture("assets/textures/knight/Knight_Idle.png");
+	auto& sprite = knight.AddComponent<SpriteComponent>();
+	sprite.Texture = ResourceManager::GetTexture("assets/textures/entities/knight/Knight_Idle.png");
+}
+
+void Game::SpawnEnemies(float x, float y)
+{
+	auto captain = m_ActiveScene->CreateGameObject("Enemy Captain");
+	captain.AddComponent<NativeScriptComponent>().Bind<EnemyKnight>();
+
+	auto& captainTransform = captain.GetComponent<TransformComponent>();
+	captainTransform.Translation = glm::vec3(x, y, 0.0f);
+
+	auto& captainSprite = captain.AddComponent<SpriteComponent>();
+	captainSprite.Texture = ResourceManager::GetTexture("assets/textures/entities/enemy_captain/Enemy_Captain_Idle.png");
+
+	int enemyCount = rand() % 4 + 1;
+
+	for (int i = 0; i < enemyCount; i++)
+	{
+		auto knight = m_ActiveScene->CreateGameObject("Enemy Knight");
+		knight.AddComponent<NativeScriptComponent>().Bind<EnemyKnight>();
+
+		auto& transform = knight.GetComponent<TransformComponent>();
+		transform.Translation = glm::vec3(x, y, 0.0f);
+
+		auto& sprite = knight.AddComponent<SpriteComponent>();
+		sprite.Texture = ResourceManager::GetTexture("assets/textures/entities/enemy_knight/Enemy_Knight_Idle.png");
+	}
+}
+
+void Game::SpawnShip()
+{
+	auto ship = m_ActiveScene->CreateGameObject("Enemy Ship");
+	ship.AddComponent<NativeScriptComponent>().Bind<Ship>();
+
+	glm::vec4 screenBounds = Utils::GetScreenBounds();
+	int x = 0;
+	int y = 0;
+
+	int edge = rand() % 4;
+	switch (edge)
+	{
+	case 0:
+		x = screenBounds.x;
+		y = Utils::RandomFloat(screenBounds.z, screenBounds.w);
+		break;
+	case 1:
+		x = screenBounds.y;
+		y = Utils::RandomFloat(screenBounds.z, screenBounds.w);
+		break;
+	case 2:
+		x = Utils::RandomFloat(screenBounds.x, screenBounds.y);
+		y = screenBounds.z;
+		break;
+	case 3:
+		x = Utils::RandomFloat(screenBounds.x, screenBounds.y);
+		y = screenBounds.w;
+		break;
+	}
+
+	auto& transform = ship.GetComponent<TransformComponent>();
+	transform.Translation = glm::vec3(x, y, 0.0f);
+	transform.Scale = glm::vec3(2.375f, 2.875f, 1.0f);
+
+	auto& sprite = ship.AddComponent<SpriteComponent>();
+	sprite.Texture = ResourceManager::GetTexture("assets/textures/entities/ship/ship.png");
 }
 
 bool Game::OnWindowResized(WindowResizeEvent& e)

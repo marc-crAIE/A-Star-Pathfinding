@@ -22,10 +22,15 @@ public:
 
 	void OnUpdate(Timestep ts) override;
 
+	void DestroyGameObject(GameObject gameObject);
+
 	void SpawnKnight(float x, float y);
+	void SpawnEnemies(float x, float y);
+	void SpawnShip();
 
 	static Game& Get() { return *s_Instance; }
 	static Ref<Scene> GetScene() { return s_Instance->m_ActiveScene; }
+	static Ref<World> GetWorld() { return s_Instance->m_World; }
 	static Ref<NodeMap> GetNodeMap() { return s_Instance->m_NodeMap; }
 private:
 	bool OnWindowResized(WindowResizeEvent& e);
@@ -37,6 +42,8 @@ private:
 	Ref<NodeMap> m_NodeMap;
 
 	GameObject m_Camera;
+
+	std::vector<GameObject> m_GameObjectsToDestroy;
 
 	bool m_ShowNodeMap = false;
 private:

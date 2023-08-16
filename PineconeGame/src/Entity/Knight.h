@@ -12,12 +12,9 @@ public:
 	void Select(bool selected = true) { m_Selected = selected; };
 
 	bool IsWandering() const { return m_Wandering; }
-
-	static float GetSpeed() { return m_MoveSpeed; }
 private:
 	GameObject m_Castle;
 
 	bool m_Wandering = true;
 	bool m_Selected = false;
-	static float m_MoveSpeed;
 };

@@ -3,6 +3,7 @@
 #include "../Utils/PerlinNoise.h"
 #include "../Utils/ResourceManager.h"
 #include "../Game.h"
+#include "../Utils/Utils.h"
 
 World::World()
 {
@@ -32,6 +33,17 @@ void World::OnRender()
 	}
 }
 
+Tile& World::GetTile(float x, float y) const
+{
+	glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f) - glm::vec2(-0.5f, 0.5f);
+	x += offset.x;
+	y += offset.y;
+
+	if (x < 0 || x >= WORLD_WIDTH || y < 0 || y >= WORLD_HEIGHT)
+		return *Tiles::WaterTile;
+	return *m_Tiles[(int)glm::floor(x)][(int)glm::floor(y)];
+}
+
 void World::Generate()
 {
 	PerlinNoise pn(7, 0.5f);
@@ -44,12 +56,12 @@ void World::Generate()
 			float heightPercent = (float)y / WORLD_HEIGHT;
 
 			float noise = glm::sin(widthPercent * glm::pi<float>());
-			noise *= glm::sin(heightPercent * glm::pi<float>());
-			noise *= pn.GetNoise(x, y) + 0.15f;
+			noise *= glm::sin(heightPercent * glm::pi<float>()) + 0.05f;
+			noise += pn.GetNoise(x, y) * 0.0f;
 
-			if (noise < 0.08f)
+			if (noise < 0.06f)
 				m_Tiles[x][y] = Tiles::WaterTile;
-			else if (noise < 0.12f)
+			else if (noise < 0.275f)
 				m_Tiles[x][y] = Tiles::SandTile;
 			else
 				m_Tiles[x][y] = Tiles::GroundTile;
@@ -135,7 +147,7 @@ void World::SpawnCastle()
 	CreateBuildingTiles(posX, posY - 1, castleSize, castleSize / 2);
 
 	glm::vec3 offset = glm::vec3(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0, 0.0f) + glm::vec3(0.5f, 0.5f, 0.0f);
-	float z = ((float)WORLD_HEIGHT / posY) / WORLD_HEIGHT;
+	float z = Utils::GetWorldZ(posY);
 
 	auto castle = Game::GetScene()->CreateGameObject("Castle");
 
@@ -153,7 +165,7 @@ void World::SpawnTree(int x, int y)
 	m_Tiles[x + 1][y] = Tiles::TreeTile;
 
 	glm::vec3 offset = glm::vec3(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0, 0.0f) + glm::vec3(-0.5f, -0.5f, 0.0f);
-	float z = ((float)WORLD_HEIGHT / y) / WORLD_HEIGHT;
+	float z = Utils::GetWorldZ(y);
 
 	auto tree = Game::GetScene()->CreateGameObject("Tree");
 
