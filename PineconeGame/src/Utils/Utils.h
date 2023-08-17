@@ -54,6 +54,12 @@ namespace Utils
 		return glm::vec4(orthoLeft, orthoRight, orthoTop, orthoBottom);
 	}
 
+	static glm::vec2 ScreenPosToWorldPos(glm::vec2 pos)
+	{
+		glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0);
+		return glm::vec2(pos.x + offset.x, pos.y + offset.y);
+	}
+
 	static float GetWorldZ(float y)
 	{
 		return ((float)WORLD_HEIGHT / y) / WORLD_HEIGHT;

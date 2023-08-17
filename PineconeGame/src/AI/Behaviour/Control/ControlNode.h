@@ -5,6 +5,7 @@ class ControlNode : public Behaviour
 {
 public:
 	ControlNode() = default;
+	ControlNode(std::initializer_list<Behaviour*> children);
 	~ControlNode();
 
 	void OnInit();

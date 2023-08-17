@@ -34,8 +34,6 @@ void Game::OnAttach()
 
 	for (int i = 0; i < 10; i++)
 		SpawnKnight(3, 3);
-
-	SpawnShip();
 }
 
 void Game::OnEvent(Event& e)
@@ -51,6 +49,14 @@ void Game::OnUpdate(Timestep ts)
 	RenderCommand::Clear();
 
 	//PC_INFO("FPS: {0}", 1 / ts);
+
+	if (m_SpawnShipElapsed >= m_SpawnNextShip)
+	{
+		SpawnShip();
+		m_SpawnShipElapsed = 0.0f;
+	}
+	else
+		m_SpawnShipElapsed += ts;
 
 	m_ActiveScene->OnUpdate(ts);
 
@@ -91,7 +97,7 @@ void Game::SpawnKnight(float x, float y)
 void Game::SpawnEnemies(float x, float y)
 {
 	auto captain = m_ActiveScene->CreateGameObject("Enemy Captain");
-	captain.AddComponent<NativeScriptComponent>().Bind<EnemyKnight>();
+	captain.AddComponent<NativeScriptComponent>().Bind<EnemyKnight>(true);
 
 	auto& captainTransform = captain.GetComponent<TransformComponent>();
 	captainTransform.Translation = glm::vec3(x, y, 0.0f);
@@ -104,7 +110,10 @@ void Game::SpawnEnemies(float x, float y)
 	for (int i = 0; i < enemyCount; i++)
 	{
 		auto knight = m_ActiveScene->CreateGameObject("Enemy Knight");
+
 		knight.AddComponent<NativeScriptComponent>().Bind<EnemyKnight>();
+		EnemyKnight* script = dynamic_cast<EnemyKnight*>(knight.GetComponent<NativeScriptComponent>().Instance);
+		script->SetLeader(captain);
 
 		auto& transform = knight.GetComponent<TransformComponent>();
 		transform.Translation = glm::vec3(x, y, 0.0f);

@@ -2,6 +2,11 @@
 
 #include <algorithm>
 
+ControlNode::ControlNode(std::initializer_list<Behaviour*> children)
+{
+	m_Children.insert(m_Children.end(), children.begin(), children.end());
+}
+
 ControlNode::~ControlNode()
 {
 	Clear();

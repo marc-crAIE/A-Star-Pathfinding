@@ -101,47 +101,50 @@ void Knight::OnCreate()
 	m_Speed = 3.0f;
 
 	m_BehaviourTree =
-		(new FallbackNode())->Add(
-			(new SequenceNode())->Add(
-				new FuncAction(HasPathCondition))->Add(
-				new FuncAction(IsNotWanderingCondition))->Add(
-				new FuncAction(GotoDestinationAction))
-		)->Add(
-			(new FallbackNode())->Add(
-				(new SequenceNode())->Add(
-					new FuncAction(IsSelectedCondition))->Add(
-					(new FallbackNode())->Add(
-						(new SequenceNode())->Add(
-							new MouseButtonReleaseCondition(Mouse::ButtonLeft))->Add(
-							new FuncAction(SetDestinationAction))->Add(
-							new SetSpriteColorAction(glm::vec4(1.0f)))
-					)->Add(
-						(new SequenceNode())->Add(
-							new UntilAction(3.0f))->Add(
-							new FuncAction(UnselectAction))
-					))
-			)->Add(
-				(new FallbackNode())->Add(
-					(new SequenceNode())->Add(
-						new MouseNearCondition(2))->Add(
-						(new FallbackNode())->Add(
-							(new SequenceNode())->Add(
-								new MouseButtonReleaseCondition(Mouse::ButtonLeft))->Add(
-								new FuncAction(SelectAction))->Add(
-								new SetSpriteColorAction(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)))
-						)->Add(
-							(new SequenceNode())->Add(
-								new SetSpriteColorAction(glm::vec4(0.75f, 0.75f, 0.75f, 1.0f)))->Add(
-								new WanderAroundObjectAction(m_Castle, 2.0f))
-						))
-				)->Add(
-					(new SequenceNode())->Add(
-						new SetSpriteColorAction(glm::vec4(1.0f)))->Add(
-						new WanderAroundObjectAction(m_Castle, 2.0f))
-				)
-			)
-		);
-
+		new FallbackNode({
+			new SequenceNode({
+				new FuncAction(HasPathCondition),
+				new FuncAction(IsNotWanderingCondition),
+				new FuncAction(GotoDestinationAction)
+			}),
+			new FallbackNode({
+				new SequenceNode({
+					new FuncAction(IsSelectedCondition),
+					new FallbackNode({
+						new SequenceNode({
+							new MouseButtonReleaseCondition(Mouse::ButtonLeft),
+							new FuncAction(SetDestinationAction),
+							new SetSpriteColorAction(glm::vec4(1.0f))
+						}),
+						new SequenceNode({
+							new UntilAction(3.0f),
+							new FuncAction(UnselectAction)
+						})
+					})
+				}),
+				new FallbackNode({
+					new SequenceNode({
+						new MouseNearCondition(2.0f),
+						new FallbackNode({
+							new SequenceNode({
+								new MouseButtonReleaseCondition(Mouse::ButtonLeft),
+								new FuncAction(SelectAction),
+								new SetSpriteColorAction(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f))
+							}),
+							new SequenceNode({
+								new SetSpriteColorAction(glm::vec4(0.75f, 0.75f, 0.75f, 1.0f)),
+								new WanderAroundObjectAction(m_Castle, 2.0f)
+							})
+						})
+					}),
+					new SequenceNode({
+						new SetSpriteColorAction(glm::vec4(1.0f)),
+						new WanderAroundObjectAction(m_Castle, 2.0f)
+					})
+				})
+			})
+		});
+	
 	m_PathAlgo = CreateRef<Pathfinding::AStar>();
 }
 

@@ -6,7 +6,7 @@
 
 EnemyKnight::EnemyKnight(bool captain)
 {
-	m_Type == captain ? CAPTAIN : KNIGHT;
+	m_Type = captain ? CAPTAIN : KNIGHT;
 }
 
 void EnemyKnight::OnCreate()
@@ -15,26 +15,20 @@ void EnemyKnight::OnCreate()
 	m_Castle = Game::GetScene()->GetGameObjectByTag("Castle");
 	m_PathAlgo = CreateRef<Pathfinding::AStar>();
 
-	// Find the first land node
-	auto& transform = GetComponent<TransformComponent>();
-	glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0) + glm::vec2(0.5f, 0.5f);
-	glm::vec2 nodePos = glm::vec2(transform.Translation) + offset;
-	glm::vec2 dirToCenter = glm::normalize(glm::vec2(-transform.Translation));
+	Ref<WanderState> wanderState = CreateRef<WanderState>();
+	Ref<FollowState> followState = CreateRef<FollowState>(m_Leader);
 
-	NodeMap::Node* node = nullptr;
-	do
-	{
-		node = Game::GetNodeMap()->GetNode(nodePos.x, nodePos.y);
-		nodePos += dirToCenter;
-	} while (!node);
+	Ref<TargetFarTransition> targetFar = CreateRef<TargetFarTransition>(wanderState, m_Leader, 5.0f);
 
-	int x = Utils::RandomInt((WORLD_WIDTH / 2) - 3, (WORLD_WIDTH / 2) + 3);
-	int y = Utils::RandomInt((WORLD_HEIGHT / 2) - 3, (WORLD_HEIGHT / 2) + 3);
-	SetDestination(node, Game::GetNodeMap()->GetNode(x, y));
+	followState->AddTransition(targetFar);
+
+	if (m_Type != CAPTAIN)
+		m_State.RequestStateChange(followState);
+	else
+		m_State.RequestStateChange(wanderState);
 }
 
 void EnemyKnight::OnUpdate(Timestep ts)
 {
-	if (m_PathAlgo->HasPath())
-		FollowPath(ts);
+	m_State.OnUpdate(GetGameObject(), ts);
 }

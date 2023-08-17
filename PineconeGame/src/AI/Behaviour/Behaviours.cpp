@@ -28,7 +28,7 @@ BehaviourStatus UntilAction::OnUpdate(GameObject gameObject, Timestep ts)
 		return BH_SUCCESS;
 
 	m_ElapsedTime += ts;
-	return BH_ABORTED;
+	return BH_PENDING;
 }
 
 BehaviourStatus FuncAction::OnUpdate(GameObject gameObject, Timestep ts)

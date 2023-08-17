@@ -2,7 +2,7 @@
 
 BehaviourStatus Behaviour::Tick(GameObject gameObject, Timestep ts)
 {
-	if (m_Status != BH_RUNNING)
+	if (m_Status != BH_RUNNING && m_Status != BH_PENDING)
 		OnInit();
 
 	m_Status = OnUpdate(gameObject, ts);

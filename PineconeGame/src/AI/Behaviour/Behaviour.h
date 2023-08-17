@@ -9,6 +9,7 @@ enum BehaviourStatus
 	BH_INVALID = -1,
 	BH_SUCCESS,
 	BH_RUNNING,
+	BH_PENDING,
 	BH_FAILURE,
 	BH_ABORTED
 };

@@ -21,7 +21,14 @@ void Ship::OnUpdate(Timestep ts)
 	}
 	else
 	{
-		Game::Get().SpawnEnemies(transform.Translation.x, transform.Translation.y);
+		glm::vec2 spawnPos = glm::vec2(transform.Translation);
+		glm::vec2 dirToCenter = glm::normalize(glm::vec2(-transform.Translation));
+
+		// Ensure that the enemies spawn on pathable land
+		while (!Game::GetWorld()->GetTile(spawnPos.x, spawnPos.y).IsPathable())
+			spawnPos += dirToCenter;
+
+		Game::Get().SpawnEnemies(spawnPos.x, spawnPos.y - 1.0f);
 		Game::Get().DestroyGameObject(GetGameObject());
 	}
 }

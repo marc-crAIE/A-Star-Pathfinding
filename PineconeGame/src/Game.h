@@ -41,6 +41,9 @@ private:
 	Ref<World> m_World;
 	Ref<NodeMap> m_NodeMap;
 
+	float m_SpawnNextShip = 10.0f;
+	float m_SpawnShipElapsed = 0.0f;
+
 	GameObject m_Camera;
 
 	std::vector<GameObject> m_GameObjectsToDestroy;

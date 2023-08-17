@@ -6,7 +6,7 @@ BehaviourStatus FallbackNode::OnUpdate(GameObject gameObject, Timestep ts)
 	{
 		BehaviourStatus status = (*m_Current)->Tick(gameObject, ts);
 
-		if (status != BH_FAILURE)
+		if (status != BH_FAILURE && status != BH_PENDING)
 			return status;
 
 		++m_Current;
