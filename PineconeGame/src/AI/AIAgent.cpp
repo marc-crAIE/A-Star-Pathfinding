@@ -47,6 +47,7 @@ bool AIAgent::FollowPath(Timestep ts)
 		glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0);
 
 		auto& transform = GetComponent<TransformComponent>();
+		auto& sprite = GetComponent<SpriteComponent>();
 		auto knightPos = glm::vec2(GetComponent<TransformComponent>().Translation) + offset;
 		auto path = GetPathAlgo();
 
@@ -60,6 +61,7 @@ bool AIAgent::FollowPath(Timestep ts)
 
 		if ((dist - (m_Speed * ts)) > 0)
 		{
+			sprite.FlipX(dir.x < 0.0f);
 			transform.Translation += glm::vec3(m_Speed * dir * (float)ts, 0.0f);
 			//transform.Translation.z = Utils::GetWorldZ(transform.Translation.y);
 		}

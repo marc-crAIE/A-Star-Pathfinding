@@ -7,11 +7,15 @@
 
 World::World()
 {
+	PC_PROFILE_FUNCTION();
+
 	Generate();
 }
 
 void World::OnRender()
 {
+	PC_PROFILE_FUNCTION();
+
 	float tileSize = 1.0f;
 	glm::vec2 offset = { WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f };
 
@@ -35,6 +39,8 @@ void World::OnRender()
 
 Tile& World::GetTile(float x, float y) const
 {
+	PC_PROFILE_FUNCTION();
+
 	glm::vec2 offset = glm::vec2(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f) - glm::vec2(-0.5f, 0.5f);
 	x += offset.x;
 	y += offset.y;
@@ -46,6 +52,8 @@ Tile& World::GetTile(float x, float y) const
 
 void World::Generate()
 {
+	PC_PROFILE_FUNCTION();
+
 	PerlinNoise pn(7, 0.5f);
 
 	for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -87,11 +95,15 @@ void World::Generate()
 
 void World::GenerateBuildings()
 {
+	PC_PROFILE_FUNCTION();
+
 	SpawnCastle();
 }
 
 void World::GenerateDecorations()
 {
+	PC_PROFILE_FUNCTION();
+
 	for (int y = 0; y < WORLD_HEIGHT; y++)
 	{
 		for (int x = 0; x < WORLD_WIDTH; x++)
@@ -124,6 +136,8 @@ void World::GenerateDecorations()
 
 void World::CreateBuildingTiles(int x, int y, int width, int height)
 {
+	PC_PROFILE_FUNCTION();
+
 	int minX = (x - (width / 2));
 	int maxX = (x + (width / 2));
 	int minY = (y - (height / 2));
@@ -140,6 +154,8 @@ void World::CreateBuildingTiles(int x, int y, int width, int height)
 
 void World::SpawnCastle()
 {
+	PC_PROFILE_FUNCTION();
+
 	int castleSize = 4;
 
 	int posX = WORLD_WIDTH / 2;
@@ -149,7 +165,7 @@ void World::SpawnCastle()
 	glm::vec3 offset = glm::vec3(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0, 0.0f) + glm::vec3(0.5f, 0.5f, 0.0f);
 	float z = Utils::GetWorldZ(posY);
 
-	auto castle = Game::GetScene()->CreateGameObject("Castle");
+	auto castle = Game::GetGOmanager()->Create("Castle");
 
 	auto& transform = castle.GetComponent<TransformComponent>();
 	transform.Translation = glm::vec3(posX, posY, 0.25f) - offset;
@@ -161,13 +177,15 @@ void World::SpawnCastle()
 
 void World::SpawnTree(int x, int y)
 {
+	PC_PROFILE_FUNCTION();
+
 	m_Tiles[x][y] = Tiles::TreeTile;
 	m_Tiles[x + 1][y] = Tiles::TreeTile;
 
 	glm::vec3 offset = glm::vec3(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0, 0.0f) + glm::vec3(-0.5f, -0.5f, 0.0f);
 	float z = Utils::GetWorldZ(y);
 
-	auto tree = Game::GetScene()->CreateGameObject("Tree");
+	auto tree = Game::GetGOmanager()->Create("Tree");
 
 	auto& transform = tree.GetComponent<TransformComponent>();
 	transform.Translation = glm::vec3(x, y, z) - offset;

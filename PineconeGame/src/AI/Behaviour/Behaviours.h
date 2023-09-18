@@ -102,22 +102,34 @@ private:
 class WanderAction : public Behaviour
 {
 public:
-	WanderAction(float speed = 1.0f) : m_Speed(speed) {}
-
 	BehaviourStatus OnUpdate(GameObject gameObject, Timestep ts) override;
-private:
-	float m_Speed;
 };
 
 class WanderAroundObjectAction : public Behaviour
 {
 public:
-	WanderAroundObjectAction(GameObject target, float speed = 1.0f) : m_Target(target), m_Speed(speed) {}
+	WanderAroundObjectAction(GameObject target) : m_Target(target) {}
 
 	BehaviourStatus OnUpdate(GameObject gameObject, Timestep ts) override;
 private:
 	GameObject m_Target;
-	float m_Speed;
+};
+
+#pragma endregion
+
+#pragma region Sensory
+
+class ObjectNearCondition : public Behaviour
+{
+public:
+	ObjectNearCondition(std::string targetTag, float distance)
+		: m_TargetTag(targetTag), m_Distance(distance)
+	{}
+
+	BehaviourStatus OnUpdate(GameObject gameObject, Timestep ts) override;
+private:
+	std::string m_TargetTag;
+	float m_Distance;
 };
 
 #pragma endregion

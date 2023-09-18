@@ -7,7 +7,9 @@ bool ResourceManager::LoadTexture(const std::string& path)
 	if (m_Textures.find(path) != m_Textures.end())
 		return true;
 
-	Ref<Texture2D> texture = Texture2D::Create(path);
+	TextureSpecification spec;
+	spec.Filter = TextureFilter::NEAREST;
+	Ref<Texture2D> texture = Texture2D::Create(spec, path);
 
 	if (!texture->IsLoaded())
 		return false;

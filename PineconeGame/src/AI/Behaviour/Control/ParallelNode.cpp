@@ -7,6 +7,7 @@ BehaviourStatus ParallelNode::OnUpdate(GameObject gameObject, Timestep ts)
 	{
 		if ((*m_Current)->Tick(gameObject, ts) == BH_SUCCESS)
 			successCount++;
+		m_Current++;
 	}
 
 	if (successCount >= m_SuccessCount)

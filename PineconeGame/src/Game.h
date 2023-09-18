@@ -9,6 +9,8 @@
 #include "AI/Pathfinding/Dijkstras.h"
 #include "AI/Pathfinding/AStar.h"
 
+#include "Utils/GameObjectManager.h"
+
 using namespace Pinecone;
 
 class Game : public Layer
@@ -21,6 +23,7 @@ public:
 	void OnEvent(Event& e) override;
 
 	void OnUpdate(Timestep ts) override;
+	void OnImGuiRender() override;
 
 	void DestroyGameObject(GameObject gameObject);
 
@@ -30,6 +33,7 @@ public:
 
 	static Game& Get() { return *s_Instance; }
 	static Ref<Scene> GetScene() { return s_Instance->m_ActiveScene; }
+	static Ref<GameObjectManager> GetGOmanager() { return s_Instance->m_GameObjectManager; }
 	static Ref<World> GetWorld() { return s_Instance->m_World; }
 	static Ref<NodeMap> GetNodeMap() { return s_Instance->m_NodeMap; }
 private:
@@ -41,12 +45,14 @@ private:
 	Ref<World> m_World;
 	Ref<NodeMap> m_NodeMap;
 
-	float m_SpawnNextShip = 10.0f;
+	float m_SpawnNextShip = 20.0f;
 	float m_SpawnShipElapsed = 0.0f;
 
-	GameObject m_Camera;
+	float m_SpawnNextKnight = 30.0f;
+	float m_SpawnKnightElapsed = 0.0f;
 
-	std::vector<GameObject> m_GameObjectsToDestroy;
+	GameObject m_Camera;
+	Ref<GameObjectManager> m_GameObjectManager;
 
 	bool m_ShowNodeMap = false;
 private:

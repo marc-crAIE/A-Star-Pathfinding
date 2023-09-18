@@ -154,3 +154,20 @@ BehaviourStatus SetSpriteColorAction::OnUpdate(GameObject gameObject, Timestep t
 	}
 	return BH_FAILURE;
 }
+
+BehaviourStatus ObjectNearCondition::OnUpdate(GameObject gameObject, Timestep ts)
+{
+	auto& transform = gameObject.GetComponent<TransformComponent>();
+
+	auto targets = Game::GetGOmanager()->GetGameObjectsFromTag(m_TargetTag);
+	for (GameObject target : targets)
+	{
+		auto& targetTransform = target.GetComponent<TransformComponent>();
+		float distance = glm::distance(transform.Translation, targetTransform.Translation);
+
+		if (distance < m_Distance)
+			return BH_SUCCESS;
+	}
+
+	return BH_FAILURE;
+}
